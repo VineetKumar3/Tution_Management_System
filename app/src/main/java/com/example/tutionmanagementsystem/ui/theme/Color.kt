@@ -13,6 +13,7 @@ val Pink40 = Color(0xFF7D5260)
 
 val white = Color(0xFFFFFFFF)
 val black = Color(0xFF000000)
+val grey = Color(0xFF808080)
 
 
 // Custom Colors for Tuition Manager
@@ -20,7 +21,7 @@ val Primary = Color(0xFF7B5CDB)
 val OnPrimary = Color(0xFFFFFFFF)
 
 val PrimaryContainer = Color(0xFFEDE7FF)
-val OnPrimaryContainer = Color(0xFF2A1B5E)
+val OnPrimaryContainer = Color(0xFF5935D5)
 
 val Secondary = Color(0xFF4CAF93)
 val OnSecondary = Color(0xFFFFFFFF)
