@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.tutionmanagementsystem.ui.attendance.AttendancePage
 import com.example.tutionmanagementsystem.ui.dashboard.AddStudentPage
 import com.example.tutionmanagementsystem.ui.splash.SplashScreen
+import com.example.tutionmanagementsystem.ui.students.StudentList
 import com.example.tutionmanagementsystem.ui.students.StudentProfile
 import com.example.tutionmanagementsystem.ui.theme.TutionManagementSystemTheme
 
@@ -26,7 +27,8 @@ class MainActivity : ComponentActivity() {
                 //AttendancePage()
                 //SplashScreen()
                 //AddStudentPage()
-                StudentProfile()
+                //StudentProfile()
+                StudentList()
             }
         }
     }

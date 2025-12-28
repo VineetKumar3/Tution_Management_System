@@ -18,6 +18,8 @@ val grey = Color(0xFF808080)
 
 // Custom Colors for Tuition Manager
 val Primary = Color(0xFF7B5CDB)
+
+val LightPrimary = Color(0xFFE9E5FF)
 val OnPrimary = Color(0xFFFFFFFF)
 
 val PrimaryContainer = Color(0xFFEDE7FF)
