@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tutionmanagementsystem.ui.attendance.AttendancePage
+import com.example.tutionmanagementsystem.ui.backup.BackupRestorePage
 import com.example.tutionmanagementsystem.ui.dashboard.AddStudentPage
 import com.example.tutionmanagementsystem.ui.payments.AddPaymentPage
 import com.example.tutionmanagementsystem.ui.payments.FeeHistoryPage
@@ -32,7 +33,8 @@ class MainActivity : ComponentActivity() {
                 //StudentProfile()
                 //StudentList()
                 //FeeHistoryPage()
-                AddPaymentPage()
+                //AddPaymentPage()
+                BackupRestorePage()
             }
         }
     }
