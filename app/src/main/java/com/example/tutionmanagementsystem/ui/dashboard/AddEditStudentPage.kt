@@ -29,6 +29,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -56,16 +57,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tutionmanagementsystem.R
 import com.example.tutionmanagementsystem.ui.theme.Poppins
-import com.example.tutionmanagementsystem.ui.theme.Primary
 import com.example.tutionmanagementsystem.ui.theme.TutionManagementSystemTheme
-import com.example.tutionmanagementsystem.ui.theme.black
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddStudentPage() {
-    // State variables to hold the input from the user
     var name by remember { mutableStateOf("") }
     var studentClass by remember { mutableStateOf("") }
     var phoneNo by remember { mutableStateOf("") }
@@ -73,19 +71,18 @@ fun AddStudentPage() {
     var courseFee by remember { mutableStateOf("") }
     var actualFee by remember { mutableStateOf("") }
 
-    // This is the correct way to define colors for an OutlinedTextField
     val textFieldColors = OutlinedTextFieldDefaults.colors(
-        cursorColor = Primary,
-        focusedTextColor = black,
-        unfocusedTextColor = black,
-        focusedBorderColor = Primary,
-        unfocusedBorderColor = Primary,
-        focusedLabelColor = Primary,
-        unfocusedLabelColor = Primary,
+        cursorColor = MaterialTheme.colorScheme.primary,
+        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
+        unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+        focusedLabelColor = MaterialTheme.colorScheme.primary,
+        unfocusedLabelColor = MaterialTheme.colorScheme.primary,
     )
     val focusManager = LocalFocusManager.current
     Scaffold(
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -93,7 +90,7 @@ fun AddStudentPage() {
                         "Add Student",
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
-                        color = black
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 },
                 navigationIcon = {
@@ -101,12 +98,12 @@ fun AddStudentPage() {
                         Icon(
                             Icons.Default.ArrowBack,
                             "Back",
-                            tint = black
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         },
@@ -116,8 +113,8 @@ fun AddStudentPage() {
                     onClick = { /* Handle save student */ },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Primary,
-                        contentColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
@@ -142,7 +139,6 @@ fun AddStudentPage() {
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Photo Placeholder
             Box(
                 modifier = Modifier
                     .size(120.dp)
@@ -159,7 +155,6 @@ fun AddStudentPage() {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Input Fields
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -202,7 +197,7 @@ fun AddStudentPage() {
                 onValueChange = {
                     if (it.length<= 10){
                         phoneNo = it }
-                        },
+                },
                 label = { Text("Phone No") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Phone,
@@ -219,7 +214,6 @@ fun AddStudentPage() {
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Date Fields
             DateInputField(
                 label = "Admission Date",
                 selectedDate = admissionDate,
@@ -228,7 +222,6 @@ fun AddStudentPage() {
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Fee Fields
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -304,7 +297,7 @@ fun DateInputField(
             Icon(
                 Icons.Default.DateRange,
                 "Select Date",
-                modifier = Modifier.clickable { datePickerDialog.show() }, tint = Primary)
+                modifier = Modifier.clickable { datePickerDialog.show() }, tint = MaterialTheme.colorScheme.primary)
         },
         singleLine = true,
         colors = colors

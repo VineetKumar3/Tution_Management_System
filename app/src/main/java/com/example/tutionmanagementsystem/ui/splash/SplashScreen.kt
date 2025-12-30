@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tutionmanagementsystem.R
 import com.example.tutionmanagementsystem.ui.theme.Poppins
-import com.example.tutionmanagementsystem.ui.theme.Primary
+import androidx.compose.material3.MaterialTheme
 
 @Composable
 fun SplashScreen() {
@@ -47,7 +47,7 @@ fun SplashScreen() {
                 text = "Tution Manager",
                 fontFamily = Poppins,
                 fontSize = 30.sp,
-                color = Primary,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
         }

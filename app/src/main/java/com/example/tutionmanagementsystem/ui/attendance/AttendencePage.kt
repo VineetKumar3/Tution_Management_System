@@ -53,23 +53,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tutionmanagementsystem.R
-import com.example.tutionmanagementsystem.ui.theme.OnPrimary
 import com.example.tutionmanagementsystem.ui.theme.Poppins
-import com.example.tutionmanagementsystem.ui.theme.Primary
 import com.example.tutionmanagementsystem.ui.theme.TutionManagementSystemTheme
-import com.example.tutionmanagementsystem.ui.theme.black
-import com.example.tutionmanagementsystem.ui.theme.grey
-import com.example.tutionmanagementsystem.ui.theme.white
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-// Data class to represent a single student
 data class Student(val id: Int, val name: String, val className: String, val imageRes: Int)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AttendancePage() {
-    // A sample list of students. In a real app, this would come from a ViewModel.
     val students = remember {
         listOf(
             Student(1, "Rahul Sharma", "Class 10", R.drawable.logo),
@@ -80,16 +73,13 @@ fun AttendancePage() {
         )
     }
 
-    // State for managing the date and the date picker dialog
     val context = LocalContext.current
     var showDatePicker by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     val dateFormatter = remember { DateTimeFormatter.ofPattern("EEE, dd MMM yyyy") }
 
-    // State to hold the attendance status (present/absent) for each student
     var attendance by remember { mutableStateOf(students.associate { it.id to true }) }
 
-    // This is the Date Picker Dialog that will be shown when `showDatePicker` is true
     if (showDatePicker) {
         val datePickerDialog = DatePickerDialog(
             context,
@@ -107,9 +97,9 @@ fun AttendancePage() {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Attendance", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, color = black) },
+                title = { Text("Attendance", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onBackground) },
                 navigationIcon = { IconButton(onClick = {})
-                { Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = black) } },
+                { Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground) } },
                 actions = {
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent)
@@ -120,7 +110,7 @@ fun AttendancePage() {
                 Button(
                     onClick = { /* Handle save attendance */ },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Primary, contentColor = Color.White),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
@@ -133,8 +123,7 @@ fun AttendancePage() {
                 }
             }
         },
-        // Set the background color for the entire page to white
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -142,7 +131,6 @@ fun AttendancePage() {
                 .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
-            // The date selector card is now clickable and displays the selected date
             DateSelector(
                 selectedDate = selectedDate.format(dateFormatter),
                 onDateClick = { showDatePicker = true }
@@ -169,8 +157,8 @@ fun DateSelector(selectedDate: String, onDateClick: () -> Unit) {
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onDateClick() }, // Make the entire card clickable
-        colors = CardDefaults.cardColors(containerColor = Primary)
+            .clickable { onDateClick() },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
     ) {
         Row(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
@@ -178,12 +166,11 @@ fun DateSelector(selectedDate: String, onDateClick: () -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(imageVector = Icons.Default.DateRange, contentDescription = "Date", tint = white)
+                Icon(imageVector = Icons.Default.DateRange, contentDescription = "Date", tint = MaterialTheme.colorScheme.onPrimary)
                 Spacer(modifier = Modifier.width(8.dp))
-                // Display the selected date from the state
-                Text(selectedDate, fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = white)
+                Text(selectedDate, fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = MaterialTheme.colorScheme.onPrimary)
             }
-            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Dropdown", tint = white)
+            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Dropdown", tint = MaterialTheme.colorScheme.onPrimary)
         }
     }
 }
@@ -197,8 +184,7 @@ fun StudentAttendanceRow(
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier.fillMaxWidth().padding(bottom = 3.dp, top = 3.dp),
-        // Set card background to white and add elevation to make it stand out
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
     ) {
         Row(
@@ -216,16 +202,16 @@ fun StudentAttendanceRow(
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(student.name, fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
-                    Text(student.className, fontFamily = Poppins, color = Color.Gray, fontSize = 14.sp)
+                    Text(student.className, fontFamily = Poppins, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f), fontSize = 14.sp)
                 }
             }
             Switch(
                 checked = isPresent,
                 onCheckedChange = onAttendanceChange,
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color.White,
-                    checkedTrackColor = Primary,
-                    uncheckedThumbColor = Color.White,
+                    checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                    checkedTrackColor = MaterialTheme.colorScheme.primary,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
                     uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
                     uncheckedBorderColor = Color.Transparent
                 )

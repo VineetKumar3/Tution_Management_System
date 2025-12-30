@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tutionmanagementsystem.ui.attendance.AttendancePage
 import com.example.tutionmanagementsystem.ui.dashboard.AddStudentPage
+import com.example.tutionmanagementsystem.ui.payments.AddPaymentPage
+import com.example.tutionmanagementsystem.ui.payments.FeeHistoryPage
 import com.example.tutionmanagementsystem.ui.splash.SplashScreen
 import com.example.tutionmanagementsystem.ui.students.StudentList
 import com.example.tutionmanagementsystem.ui.students.StudentProfile
@@ -28,7 +30,9 @@ class MainActivity : ComponentActivity() {
                 //SplashScreen()
                 //AddStudentPage()
                 //StudentProfile()
-                StudentList()
+                //StudentList()
+                //FeeHistoryPage()
+                AddPaymentPage()
             }
         }
     }

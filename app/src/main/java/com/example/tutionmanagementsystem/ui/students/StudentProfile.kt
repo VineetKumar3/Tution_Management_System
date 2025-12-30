@@ -31,6 +31,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -56,9 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tutionmanagementsystem.R
 import com.example.tutionmanagementsystem.ui.theme.Poppins
-import com.example.tutionmanagementsystem.ui.theme.Primary
 import com.example.tutionmanagementsystem.ui.theme.TutionManagementSystemTheme
-import com.example.tutionmanagementsystem.ui.theme.black
 import kotlinx.coroutines.launch
 
 @OptIn(
@@ -74,7 +73,7 @@ fun StudentProfile() {
     var isActive by remember { mutableStateOf(true) }
 
     Scaffold(
-        containerColor = Color(0xFFF7F8FA),
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -82,7 +81,7 @@ fun StudentProfile() {
                         "Student Profile",
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
-                        color = black
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 },
                 navigationIcon = {
@@ -90,7 +89,7 @@ fun StudentProfile() {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             "Back",
-                            tint = black
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
@@ -99,12 +98,12 @@ fun StudentProfile() {
                         Icon(
                             Icons.Default.Edit,
                             contentDescription = "Edit Profile",
-                            tint = black
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         },
@@ -115,11 +114,10 @@ fun StudentProfile() {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Profile Header Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFE9E5FF)), // Light purple
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant), // Light purple
                 elevation = CardDefaults.cardElevation(0.dp)
             ) {
                 Row(
@@ -142,14 +140,14 @@ fun StudentProfile() {
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
-                            color = black
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
                             text = "Class 10",
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Normal,
                             fontSize = 14.sp,
-                            color = Color.Gray
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -158,7 +156,7 @@ fun StudentProfile() {
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 17.sp,
-                                color = if (isActive) Primary else Color.Gray,
+                                color = if (isActive) MaterialTheme.colorScheme.primary else Color.Gray,
                                 modifier = Modifier.width(80.dp)
                             )
                             Switch(
@@ -166,10 +164,10 @@ fun StudentProfile() {
                                 onCheckedChange = { isActive = it },
                                 modifier = Modifier.scale(0.7f),
                                 colors = SwitchDefaults.colors(
-                                    checkedThumbColor = Color.White,
-                                    checkedTrackColor = Primary,
-                                    uncheckedThumbColor = Color.White,
-                                    uncheckedTrackColor = Color.Gray
+                                    checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                                    checkedTrackColor = MaterialTheme.colorScheme.primary,
+                                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
+                                    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
                                 )
                             )
                         }
@@ -179,16 +177,15 @@ fun StudentProfile() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // TabRow in a Card
             Card(
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(Color.White),
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
                 TabRow(
                     selectedTabIndex = selectedTabIndex,
                     containerColor = Color.Transparent,
-                    contentColor = Primary,
+                    contentColor = MaterialTheme.colorScheme.primary,
                     indicator = {},
                     divider = {}
                 ) {
@@ -203,7 +200,7 @@ fun StudentProfile() {
                             modifier = if (selectedTabIndex == index) Modifier
                                 .padding(4.dp)
                                 .background(
-                                    Primary,
+                                    MaterialTheme.colorScheme.primary,
                                     RoundedCornerShape(12.dp)
                                 ) else Modifier
                                 .padding(4.dp)
@@ -212,9 +209,8 @@ fun StudentProfile() {
                                 Text(
                                     text = title,
                                     fontFamily = Poppins,
-                                    color = if (selectedTabIndex == index) Color.White else Color.Gray,
+                                    color = if (selectedTabIndex == index) MaterialTheme.colorScheme.onPrimary else Color.Gray,
                                     modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp)
-
                                 )
                             }
                         )
@@ -233,7 +229,7 @@ fun StudentProfile() {
                         .fillMaxSize()
                         .padding(top = 10.dp),
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
                     when (page) {
                         0 -> ProfileAndAttendanceContent()
@@ -267,7 +263,7 @@ fun ProfileAndAttendanceContent() {
                     Icon(
                         Icons.Default.Call,
                         contentDescription = "Call",
-                        tint = Primary,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(start = 5.dp)
                     )
                 }
@@ -279,7 +275,7 @@ fun ProfileAndAttendanceContent() {
             fontFamily = Poppins,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
-            color = black,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         ProfileInfoRow(label = "Total Classes", value = "50")
@@ -304,7 +300,7 @@ fun ProfileAndAttendanceContent() {
                     .weight(1f)
                     .height(12.dp)
                     .clip(RoundedCornerShape(6.dp)),
-                color = Primary,
+                color = MaterialTheme.colorScheme.primary,
                 trackColor = Color.LightGray
             )
             Spacer(modifier = Modifier.width(16.dp))
@@ -313,7 +309,7 @@ fun ProfileAndAttendanceContent() {
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 18.sp,
-                color = Primary
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -358,7 +354,7 @@ fun ProfileInfoRow(
             fontFamily = Poppins,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
-            color = Color.Gray
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -366,7 +362,7 @@ fun ProfileInfoRow(
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
-                color = black
+                color = MaterialTheme.colorScheme.onSurface
             )
             trailingIcon?.invoke()
         }
