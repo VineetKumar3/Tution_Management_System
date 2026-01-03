@@ -1,4 +1,4 @@
-package com.example.tutionmanagementsystem.ui.dashboard
+package com.example.tutionmanagementsystem.ui.students
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.Image
@@ -63,7 +63,7 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddStudentPage() {
+fun AddStudentPage(onBack: () -> Unit) {
     var name by remember { mutableStateOf("") }
     var studentClass by remember { mutableStateOf("") }
     var phoneNo by remember { mutableStateOf("") }
@@ -94,7 +94,7 @@ fun AddStudentPage() {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back */ }) {
+                    IconButton(onClick = { onBack() }) {
                         Icon(
                             Icons.Default.ArrowBack,
                             "Back",
@@ -198,7 +198,6 @@ fun AddStudentPage() {
                     if (it.length<= 10){
                         phoneNo = it }
                 },
-                label = { Text("Phone No") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Phone,
                     imeAction = ImeAction.Next
@@ -308,6 +307,6 @@ fun DateInputField(
 @Composable
 fun AddStudentPagePreview() {
     TutionManagementSystemTheme {
-        AddStudentPage()
+        AddStudentPage(onBack = {})
     }
 }

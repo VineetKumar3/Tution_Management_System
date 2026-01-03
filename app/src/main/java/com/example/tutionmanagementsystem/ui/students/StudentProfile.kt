@@ -65,7 +65,7 @@ import kotlinx.coroutines.launch
     ExperimentalFoundationApi::class
 )
 @Composable
-fun StudentProfile() {
+fun StudentProfile(onBack: () -> Unit) {
     val tabs = listOf("Profile", "Fees")
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val selectedTabIndex = pagerState.currentPage
@@ -85,7 +85,7 @@ fun StudentProfile() {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back */ }) {
+                    IconButton(onClick = { onBack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             "Back",
@@ -373,6 +373,6 @@ fun ProfileInfoRow(
 @Composable
 fun StudentProfilePreview() {
     TutionManagementSystemTheme {
-        StudentProfile()
+        StudentProfile(onBack = {})
     }
 }

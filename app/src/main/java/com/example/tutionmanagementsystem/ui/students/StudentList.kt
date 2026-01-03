@@ -51,7 +51,7 @@ data class Student(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StudentList() {
+fun StudentList(onNavigateToProfile: () -> Unit, onBack: () -> Unit) {
     val students = listOf(
         Student("Vineet Kumar", "12th"),
         Student("Rahul Sharma", "11th"),
@@ -71,7 +71,7 @@ fun StudentList() {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back */ }) {
+                    IconButton(onClick = { onBack() }) {
                         Icon(
                             Icons.Default.ArrowBack,
                             "Back",
@@ -102,9 +102,7 @@ fun StudentList() {
                 .padding(horizontal = 16.dp)
         ) {
             items(students) { student ->
-                StudentListItem(student = student, onItemClick = {
-                    // TODO: Handle click to navigate to student profile
-                })
+                StudentListItem(student = student, onItemClick = { onNavigateToProfile() })
             }
         }
     }
@@ -159,6 +157,6 @@ fun StudentListItem(student: Student, onItemClick: (Student) -> Unit) {
 @Composable
 fun StudentListPreview() {
     TutionManagementSystemTheme {
-        StudentList()
+        StudentList(onNavigateToProfile = {}, onBack = {})
     }
 }

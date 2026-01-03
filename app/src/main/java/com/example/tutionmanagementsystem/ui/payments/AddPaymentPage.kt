@@ -58,7 +58,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddPaymentPage() {
+fun AddPaymentPage(onBack: () -> Unit) {
     val students = listOf("Vineet Kumar", "Rahul Sharma", "Priya Patel")
 
     var selectedStudent by remember { mutableStateOf(students[0]) }
@@ -89,7 +89,7 @@ fun AddPaymentPage() {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back */ }) {
+                    IconButton(onClick = { onBack() }) {
                         Icon(
                             Icons.Default.ArrowBack,
                             "Back",
@@ -294,6 +294,6 @@ fun AddPaymentPage() {
 @Composable
 fun AddPaymentPagePreview() {
     TutionManagementSystemTheme {
-        AddPaymentPage()
+        AddPaymentPage(onBack = {})
     }
 }
