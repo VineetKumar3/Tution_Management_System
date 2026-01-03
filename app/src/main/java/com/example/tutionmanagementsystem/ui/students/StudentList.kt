@@ -1,9 +1,7 @@
 package com.example.tutionmanagementsystem.ui.students
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,7 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,7 +39,6 @@ import androidx.compose.ui.unit.sp
 import com.example.tutionmanagementsystem.R
 import com.example.tutionmanagementsystem.ui.theme.Poppins
 import com.example.tutionmanagementsystem.ui.theme.TutionManagementSystemTheme
-import java.time.LocalDate
 
 data class Student(
     val name: String,
@@ -51,7 +47,11 @@ data class Student(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StudentList(onNavigateToProfile: () -> Unit, onBack: () -> Unit) {
+fun StudentList(
+    onNavigateToProfile: () -> Unit,
+    onBack: () -> Unit,
+    onNavigateToAddStudent: () -> Unit
+) {
     val students = listOf(
         Student("Vineet Kumar", "12th"),
         Student("Rahul Sharma", "11th"),
@@ -86,7 +86,7 @@ fun StudentList(onNavigateToProfile: () -> Unit, onBack: () -> Unit) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Handle add student */ },
+                onClick = { onNavigateToAddStudent() },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = CircleShape
@@ -157,6 +157,6 @@ fun StudentListItem(student: Student, onItemClick: (Student) -> Unit) {
 @Composable
 fun StudentListPreview() {
     TutionManagementSystemTheme {
-        StudentList(onNavigateToProfile = {}, onBack = {})
+        StudentList(onNavigateToProfile = {}, onNavigateToAddStudent = {}, onBack = {} )
     }
 }

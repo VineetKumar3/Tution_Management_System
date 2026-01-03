@@ -240,6 +240,7 @@ fun AddPaymentPage(onBack: () -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
+                singleLine = true,
                 value = amount,
                 onValueChange = { amount = it },
                 label = { Text("Amount", fontWeight = FontWeight.Normal) },

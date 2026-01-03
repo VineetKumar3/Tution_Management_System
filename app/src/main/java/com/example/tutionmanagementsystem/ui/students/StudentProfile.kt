@@ -65,7 +65,7 @@ import kotlinx.coroutines.launch
     ExperimentalFoundationApi::class
 )
 @Composable
-fun StudentProfile(onBack: () -> Unit) {
+fun StudentProfile(onBack: () -> Unit, onEditStudent: () -> Unit) {
     val tabs = listOf("Profile", "Fees")
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val selectedTabIndex = pagerState.currentPage
@@ -94,7 +94,7 @@ fun StudentProfile(onBack: () -> Unit) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* Handle edit profile */ }) {
+                    IconButton(onClick = { onEditStudent() }) {
                         Icon(
                             Icons.Default.Edit,
                             contentDescription = "Edit Profile",
@@ -373,6 +373,6 @@ fun ProfileInfoRow(
 @Composable
 fun StudentProfilePreview() {
     TutionManagementSystemTheme {
-        StudentProfile(onBack = {})
+        StudentProfile(onBack = {}, onEditStudent = {})
     }
 }

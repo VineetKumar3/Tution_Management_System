@@ -62,7 +62,7 @@ data class Student(val id: Int, val name: String, val className: String, val ima
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AttendancePage() {
+fun AttendancePage(onBack: () -> Unit) {
     val students = remember {
         listOf(
             Student(1, "Rahul Sharma", "Class 10", R.drawable.logo),
@@ -98,10 +98,9 @@ fun AttendancePage() {
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Attendance", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onBackground) },
-                navigationIcon = { IconButton(onClick = {})
+                navigationIcon = { IconButton(onClick = { onBack() })
                 { Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground) } },
-                actions = {
-                },
+                actions = { },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent)
             )
         },
@@ -224,6 +223,6 @@ fun StudentAttendanceRow(
 @Composable
 fun AttendancePagePreview() {
     TutionManagementSystemTheme {
-        AttendancePage()
+        AttendancePage(onBack = {})
     }
 }

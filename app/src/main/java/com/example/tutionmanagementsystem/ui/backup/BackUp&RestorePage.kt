@@ -38,14 +38,14 @@ import com.example.tutionmanagementsystem.ui.theme.TutionManagementSystemTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BackupRestorePage() {
+fun BackupRestorePage(onBack: () -> Unit) {
     TutionManagementSystemTheme {
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
                     title = { Text("Backup & Restore") },
                     navigationIcon = {
-                        IconButton(onClick = { /* Handle back press */ }) {
+                        IconButton(onClick = { onBack () }) {
                             Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                         }
                     },
@@ -188,5 +188,7 @@ fun BackupRestorePage() {
 @Preview(showBackground = true)
 @Composable
 fun BackupRestorePagePreview() {
-    BackupRestorePage()
+    TutionManagementSystemTheme {
+        BackupRestorePage(onBack = { })
+    }
 }

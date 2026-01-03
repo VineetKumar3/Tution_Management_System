@@ -194,6 +194,7 @@ fun AddStudentPage(onBack: () -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = phoneNo,
+                label = {Text("Phone Number")},
                 onValueChange = {
                     if (it.length<= 10){
                         phoneNo = it }
