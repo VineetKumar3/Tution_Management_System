@@ -12,14 +12,17 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface StudentDAO {
 
-    @Query("SELECT * FROM students ORDER BY name ASC")
+    @Query("SELECT * FROM students ORDER BY studentName ASC")
     fun getAllStudents(): Flow<List<StudentEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertStudent(student: StudentEntity)
 
-    @Query("SELECT * FROM students WHERE id = :id")
-    fun getStudentById(id: Int): Flow<StudentEntity?>
+    @Query("SELECT * FROM students WHERE studentId = :id")
+    fun getStudentByIdFlow(id: Int): Flow<StudentEntity?>
+
+    @Query("SELECT * FROM students WHERE studentId = :id")
+    suspend fun getStudentById(id: Int): StudentEntity?
 
     @Update
     suspend fun updateStudent(student: StudentEntity)

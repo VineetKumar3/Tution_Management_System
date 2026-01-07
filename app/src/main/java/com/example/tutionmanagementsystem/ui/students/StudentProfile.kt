@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -40,7 +42,9 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,21 +60,55 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tutionmanagementsystem.R
+import com.example.tutionmanagementsystem.data.entity.StudentEntity
 import com.example.tutionmanagementsystem.ui.theme.Poppins
 import com.example.tutionmanagementsystem.ui.theme.TutionManagementSystemTheme
+import com.example.tutionmanagementsystem.viewmodel.StudentViewModel
 import kotlinx.coroutines.launch
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StudentProfile(onBack: () -> Unit, onEditStudent: () -> Unit) {
+fun StudentProfile(
+    viewModel: StudentViewModel, // 1. Add ViewModel
+    studentId: Int,              // 2. Add studentId
+    onBack: () -> Unit,
+    onEditStudent: (Int) -> Unit // 3. Update to pass the ID for editing
+) {
+    // 4. Fetch the specific student's data
+    // LaunchedEffect ensures this runs once when studentId changes
+    LaunchedEffect(studentId) {
+        viewModel.getStudentById(studentId)
+    }
+    // Observe the LiveData that holds the single student
+    val student by viewModel.selectedStudent.observeAsState()
+
+    // Show a loading indicator while the student data is being fetched
+    if (student == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else {
+        // Once the student data is loaded, display the profile content
+        StudentProfileContent(
+            student = student!!,
+            onBack = onBack,
+            onEditStudent = { onEditStudent(studentId) } // Pass the ID when edit is clicked
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun StudentProfileContent(
+    student: StudentEntity,
+    onBack: () -> Unit,
+    onEditStudent: () -> Unit
+) {
     val tabs = listOf("Profile", "Fees")
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val selectedTabIndex = pagerState.currentPage
     val scope = rememberCoroutineScope()
-    var isActive by remember { mutableStateOf(true) }
+    var isActive by remember { mutableStateOf(true) } // You can bind this to the student entity later
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -85,7 +123,7 @@ fun StudentProfile(onBack: () -> Unit, onEditStudent: () -> Unit) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onBack() }) {
+                    IconButton(onClick = onBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             "Back",
@@ -94,7 +132,7 @@ fun StudentProfile(onBack: () -> Unit, onEditStudent: () -> Unit) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { onEditStudent() }) {
+                    IconButton(onClick = onEditStudent) {
                         Icon(
                             Icons.Default.Edit,
                             contentDescription = "Edit Profile",
@@ -117,7 +155,7 @@ fun StudentProfile(onBack: () -> Unit, onEditStudent: () -> Unit) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant), // Light purple
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 elevation = CardDefaults.cardElevation(0.dp)
             ) {
                 Row(
@@ -135,15 +173,17 @@ fun StudentProfile(onBack: () -> Unit, onEditStudent: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Column {
+                        // 5. USE REAL DATA
                         Text(
-                            text = "Rahul Sharma",
+                            text = student.studentName,
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                        // 6. USE REAL DATA
                         Text(
-                            text = "Class 10",
+                            text = "Class ${student.studentClass}",
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Normal,
                             fontSize = 14.sp,
@@ -232,7 +272,8 @@ fun StudentProfile(onBack: () -> Unit, onEditStudent: () -> Unit) {
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
                     when (page) {
-                        0 -> ProfileAndAttendanceContent()
+                        // 7. PASS REAL DATA to the sub-composables
+                        0 -> ProfileAndAttendanceContent(student)
                         1 -> FeesContent()
                     }
                 }
@@ -242,19 +283,21 @@ fun StudentProfile(onBack: () -> Unit, onEditStudent: () -> Unit) {
 }
 
 @Composable
-fun ProfileAndAttendanceContent() {
+fun ProfileAndAttendanceContent(student: StudentEntity) { // Accept student data
     Column(
         modifier = Modifier
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
+        // You would add admissionDate to your StudentEntity to show real data here
         ProfileInfoRow(label = "Admission Date", value = "05 Mar 2021")
         HorizontalDivider(
             modifier = Modifier.padding(vertical = 8.dp),
             color = Color.LightGray.copy(alpha = 0.5f)
         )
+        // 8. USE REAL DATA
         ProfileInfoRow(
-            label = "Parent Phone", value = "9876543210",
+            label = "Parent Phone", value = student.mobileNumber,
             trailingIcon = {
                 IconButton(
                     onClick = { /* Handle call */ },
@@ -295,7 +338,7 @@ fun ProfileAndAttendanceContent() {
         Spacer(modifier = Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             LinearProgressIndicator(
-                progress = { 0.9f }, // Changed to lambda
+                progress = { 0.9f },
                 modifier = Modifier
                     .weight(1f)
                     .height(12.dp)
@@ -322,6 +365,7 @@ fun FeesContent() {
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
+        // You would add fee details to your StudentEntity to show real data here
         ProfileInfoRow(label = "Course Fee", value = "₹1500")
         HorizontalDivider(
             modifier = Modifier.padding(vertical = 8.dp),
@@ -373,6 +417,20 @@ fun ProfileInfoRow(
 @Composable
 fun StudentProfilePreview() {
     TutionManagementSystemTheme {
-        StudentProfile(onBack = {}, onEditStudent = {})
+        // 9. UPDATE the Preview
+        val sampleStudent = StudentEntity(
+            studentId = 1,
+            studentName = "Rahul Sharma (Preview)",
+            studentClass = "10",
+            mobileNumber = "9876543210",
+            admissionDate = "",
+            courseFee = "",
+            actualFee = ""
+        )
+        StudentProfileContent(
+            student = sampleStudent,
+            onBack = {},
+            onEditStudent = {}
+        )
     }
 }

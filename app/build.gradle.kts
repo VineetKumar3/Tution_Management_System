@@ -46,6 +46,7 @@ dependencies {
     // Core & Lifecycle
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.10.0")
     implementation(libs.androidx.activity.compose)
 
     // Compose Bill of Materials (BOM) - Manages versions for other Compose libraries
@@ -66,6 +67,7 @@ dependencies {
     // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.compose.runtime.livedata)
     ksp(libs.androidx.room.compiler)
 
     // Testing

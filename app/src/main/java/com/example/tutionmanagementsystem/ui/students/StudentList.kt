@@ -14,8 +14,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -28,6 +28,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,27 +39,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tutionmanagementsystem.R
+import com.example.tutionmanagementsystem.data.entity.StudentEntity
 import com.example.tutionmanagementsystem.ui.theme.Poppins
 import com.example.tutionmanagementsystem.ui.theme.TutionManagementSystemTheme
-
-data class Student(
-    val name: String,
-    val studentClass: String,
-)
+import com.example.tutionmanagementsystem.viewmodel.StudentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentList(
-    onNavigateToProfile: () -> Unit,
+    viewModel: StudentViewModel,
+    onNavigateToProfile: (Int) -> Unit, // 1. UPDATE: Change signature to accept an Int
     onBack: () -> Unit,
     onNavigateToAddStudent: () -> Unit
 ) {
-    val students = listOf(
-        Student("Vineet Kumar", "12th"),
-        Student("Rahul Sharma", "11th"),
-        Student("Priya Patel", "10th")
-    )
+    val studentList by viewModel.allStudents.observeAsState(initial = emptyList())
 
+    StudentListContent(
+        studentList = studentList,
+        onNavigateToProfile = onNavigateToProfile, // Pass the updated function along
+        onBack = onBack,
+        onNavigateToAddStudent = onNavigateToAddStudent
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StudentListContent(
+    studentList: List<StudentEntity>,
+    onNavigateToProfile: (Int) -> Unit, // 2. UPDATE: Change signature here too
+    onBack: () -> Unit,
+    onNavigateToAddStudent: () -> Unit
+) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -73,7 +85,7 @@ fun StudentList(
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
                         Icon(
-                            Icons.Default.ArrowBack,
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             "Back",
                             tint = MaterialTheme.colorScheme.onBackground
                         )
@@ -101,20 +113,27 @@ fun StudentList(
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
         ) {
-            items(students) { student ->
-                StudentListItem(student = student, onItemClick = { onNavigateToProfile() })
+            items(studentList) { student ->
+                StudentListItem(
+                    student = student,
+                    // 3. UPDATE: onItemClick now provides the student object
+                    onItemClick = { studentEntity ->
+                        // Call the navigation function with the student's ID
+                        onNavigateToProfile(studentEntity.studentId)
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-fun StudentListItem(student: Student, onItemClick: (Student) -> Unit) {
+fun StudentListItem(student: StudentEntity, onItemClick: (StudentEntity) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onItemClick(student) },
+            .clickable { onItemClick(student) }, // This is correct, it passes the whole student up
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -134,7 +153,7 @@ fun StudentListItem(student: Student, onItemClick: (Student) -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
-                    text = student.name,
+                    text = student.studentName,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
@@ -152,11 +171,19 @@ fun StudentListItem(student: Student, onItemClick: (Student) -> Unit) {
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun StudentListPreview() {
     TutionManagementSystemTheme {
-        StudentList(onNavigateToProfile = {}, onNavigateToAddStudent = {}, onBack = {} )
+        val sampleStudents = listOf(
+            StudentEntity(studentId = 1, studentName = "Vineet Kumar", studentClass = "10th", mobileNumber = "12345", admissionDate = "", courseFee = "", actualFee = ""),
+            StudentEntity(studentId = 2, studentName = "Priya Sharma", studentClass = "12th", mobileNumber = "67890", admissionDate = "", courseFee = "", actualFee = "")
+        )
+        StudentListContent(
+            studentList = sampleStudents,
+            onNavigateToProfile = {}, // Preview doesn't need to navigate, so an empty lambda is fine
+            onNavigateToAddStudent = {},
+            onBack = {}
+        )
     }
 }

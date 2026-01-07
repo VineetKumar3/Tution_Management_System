@@ -16,7 +16,11 @@ class Repository(
     // --- Student Functions ---
     val all_students: Flow<List<StudentEntity>> = studentDAO.getAllStudents()
 
-    fun getStudentsById(id: Int): Flow<StudentEntity?>{
+    fun getStudentsByIdFlow(id: Int): Flow<StudentEntity?>{
+        return studentDAO.getStudentByIdFlow(id)
+    }
+
+    suspend fun getStudentById(id: Int): StudentEntity? {
         return studentDAO.getStudentById(id)
     }
 

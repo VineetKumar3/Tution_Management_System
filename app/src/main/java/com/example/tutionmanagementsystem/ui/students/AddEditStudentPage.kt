@@ -1,6 +1,7 @@
 package com.example.tutionmanagementsystem.ui.students
 
 import android.app.DatePickerDialog
+import androidx.compose.animation.core.copy
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,7 +22,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,7 +38,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -56,20 +59,53 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tutionmanagementsystem.R
+import com.example.tutionmanagementsystem.data.entity.StudentEntity
 import com.example.tutionmanagementsystem.ui.theme.Poppins
 import com.example.tutionmanagementsystem.ui.theme.TutionManagementSystemTheme
+import com.example.tutionmanagementsystem.viewmodel.StudentViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddStudentPage(onBack: () -> Unit) {
+fun AddStudentPage(
+    viewModel: StudentViewModel,
+    studentId: Int, // 1. ACCEPT the studentId
+    onBack: () -> Unit
+) {
+    // Determine if we are in "edit mode"
+    val isEditMode = studentId != -1
+
+    // Observe the selected student from the ViewModel
+    val studentToEdit by viewModel.selectedStudent.observeAsState()
+
+    // State variables for the input fields
     var name by remember { mutableStateOf("") }
     var studentClass by remember { mutableStateOf("") }
     var phoneNo by remember { mutableStateOf("") }
     var admissionDate by remember { mutableStateOf<LocalDate?>(null) }
     var courseFee by remember { mutableStateOf("") }
     var actualFee by remember { mutableStateOf("") }
+
+    // This effect runs when the screen is in "edit mode"
+    LaunchedEffect(isEditMode, studentId) {
+        if (isEditMode) {
+            viewModel.getStudentById(studentId)
+        }
+    }
+
+    // This effect runs when the student data has been loaded for editing
+    LaunchedEffect(studentToEdit) {
+        if (isEditMode && studentToEdit != null && studentToEdit?.studentId == studentId) {
+            name = studentToEdit!!.studentName
+            studentClass = studentToEdit!!.studentClass
+            phoneNo = studentToEdit!!.mobileNumber
+            // You can add logic here to parse and set admissionDate, courseFee, etc.
+        }
+    }
+
+    val pageTitle = if (isEditMode) "Edit Student" else "Add Student"
+    val buttonText = if (isEditMode) "Update Student" else "Save Student"
 
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         cursorColor = MaterialTheme.colorScheme.primary,
@@ -87,7 +123,7 @@ fun AddStudentPage(onBack: () -> Unit) {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Add Student",
+                        pageTitle, // Use dynamic page title
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onBackground
@@ -96,7 +132,7 @@ fun AddStudentPage(onBack: () -> Unit) {
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
                         Icon(
-                            Icons.Default.ArrowBack,
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             "Back",
                             tint = MaterialTheme.colorScheme.onBackground
                         )
@@ -110,7 +146,28 @@ fun AddStudentPage(onBack: () -> Unit) {
         bottomBar = {
             Box(modifier = Modifier.padding(16.dp)) {
                 Button(
-                    onClick = { /* Handle save student */ },
+                    onClick = {
+                        // 2. HANDLE BOTH SAVE AND UPDATE LOGIC
+                        if (isEditMode) {
+                            val updatedStudent = studentToEdit!!.copy(
+                                studentName = name,
+                                studentClass = studentClass,
+                                mobileNumber = phoneNo
+                            )
+                            viewModel.updateStudent(updatedStudent)
+                        } else {
+                            val newStudent = StudentEntity(
+                                studentName = name,
+                                studentClass = studentClass,
+                                mobileNumber = phoneNo,
+                                admissionDate = admissionDate.toString(),
+                                courseFee = courseFee,
+                                actualFee = actualFee
+                            )
+                            viewModel.addStudent(newStudent)
+                        }
+                        onBack() // Navigate back after saving/updating
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -119,7 +176,7 @@ fun AddStudentPage(onBack: () -> Unit) {
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = "Save Student",
+                        text = buttonText, // Use dynamic button text
                         modifier = Modifier.padding(vertical = 8.dp),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
@@ -308,6 +365,7 @@ fun DateInputField(
 @Composable
 fun AddStudentPagePreview() {
     TutionManagementSystemTheme {
-        AddStudentPage(onBack = {})
+        // Preview can't easily create a ViewModel, so we can't show a full preview here.
+        // This is an expected limitation.
     }
 }
